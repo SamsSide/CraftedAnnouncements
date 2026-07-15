@@ -1,0 +1,50 @@
+# Every player-facing string CraftedAnnouncements can send.
+#
+# All strings support BOTH legacy colour/format codes (&a, &l, &#RRGGBB, and the
+# section-sign form) AND MiniMessage tags (<green>, <bold>, <#RRGGBB>, <gradient>).
+# You can freely mix the two in a single line.
+#
+# Placeholders shown as <name> below are filled in by the plugin.
+
+# Schema version - leave this alone; it drives the auto-merge on update.
+config-version: 1
+
+# Prefix prepended to command FEEDBACK messages (success/error/usage) sent to a
+# player or the console. This is not added to broadcasts or preset announcements.
+prefix: "<gray>[<aqua>Announcements<gray>] <reset>"
+
+# Prefix prepended to ad-hoc /broadcast (and /announce) messages only. Preset
+# announcements from announcements.yml are sent exactly as written and never get
+# this prefix. Set to "" for no prefix.
+broadcast-prefix: "<gold><bold>[Broadcast]</bold> <reset>"
+
+# Shown when a sender lacks the permission for what they tried to do.
+no-permission: "<red>You don't have permission to do that."
+
+# --- /broadcast ---
+broadcast-usage: "<red>Usage: <white>/broadcast <message>"
+
+# --- /craftedannouncements root usage (a list = multiple lines) ---
+craftedannouncements-usage:
+  - "<gray><strikethrough>                    </strikethrough>"
+  - "<aqua>/craftedannouncements reload <gray>- reload all config files"
+  - "<aqua>/craftedannouncements list <gray>- list preset announcements"
+  - "<aqua>/craftedannouncements trigger <id> [args...] <gray>- fire a preset"
+  - "<gray><strikethrough>                    </strikethrough>"
+
+# --- reload ---
+reload-success: "<green>Reloaded config.yml, messages.yml and announcements.yml."
+reload-failed: "<red>Reload failed - check the console for details."
+
+# --- list ---
+list-header: "<gray>Preset announcements (<yellow><count></yellow>):"
+list-entry: "<dark_gray>- <aqua><id> <gray>(<state><gray>)"
+list-entry-scheduled: "<green>every <interval>"
+list-entry-manual: "<yellow>manual"
+list-empty: "<gray>There are no preset announcements defined in announcements.yml."
+
+# --- trigger ---
+trigger-usage: "<red>Usage: <white>/craftedannouncements trigger <id> [args...]"
+trigger-unknown-id: "<red>No preset announcement with id '<yellow><id><red>'."
+trigger-arg-count: "<red>Preset '<yellow><id><red>' expects <yellow><expected><red> argument(s), but you supplied <yellow><given><red>."
+trigger-success: "<green>Triggered preset announcement '<yellow><id><green>'."

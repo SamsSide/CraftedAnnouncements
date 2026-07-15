@@ -1,0 +1,37 @@
+name: CraftedAnnouncements
+version: ${project.version}
+main: net.samsside.craftedannouncements.CraftedAnnouncements
+author: SamsSide
+api-version: '1.21'
+description: Broadcast and scheduled preset announcements with MiniMessage formatting, arguments and sounds.
+folia-supported: false
+
+# PlaceholderAPI is soft: the plugin always enables. When present, %..% placeholders
+# inside announcements and broadcasts are resolved per recipient; when absent they are
+# left untouched.
+softdepend:
+  - PlaceholderAPI
+
+commands:
+  craftedannouncements:
+    description: Crafted Announcements admin root command.
+    aliases: [ca]
+    usage: /craftedannouncements <reload|list|trigger>
+  broadcast:
+    description: Broadcast a message to every online player.
+    aliases: [announce, bc, ac]
+    usage: /broadcast <message>
+
+permissions:
+  craftedannouncements.reload:
+    description: Allows reloading config.yml, messages.yml and announcements.yml.
+    default: op
+  craftedannouncements.list:
+    description: Allows listing every preset announcement.
+    default: op
+  craftedannouncements.trigger:
+    description: Allows manually firing a preset announcement.
+    default: op
+  craftedannouncements.broadcast:
+    description: Allows sending an ad-hoc broadcast to every player.
+    default: op

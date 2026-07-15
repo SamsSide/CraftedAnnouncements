@@ -1,0 +1,12 @@
+# CraftedAnnouncements configuration.
+#
+# Preset announcements live in announcements.yml, and every player-facing string
+# lives in messages.yml. This file only holds global toggles.
+
+# Schema version. Do not change this by hand - it lets the plugin merge in new
+# default keys on update without touching your edits.
+config-version: 1
+
+# When true, every announcement (an ad-hoc /broadcast, a manual trigger, or a
+# scheduled preset) is also echoed to the server console as plain text.
+log-announcements-to-console: false

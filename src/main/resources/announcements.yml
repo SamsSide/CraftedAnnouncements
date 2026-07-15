@@ -1,0 +1,60 @@
+# Preset announcements.
+#
+# Each entry under "announcements:" is keyed by a unique ID (letters, numbers,
+# dashes). Fire one manually with:
+#     /craftedannouncements trigger <id> [args...]
+# ...or let it fire automatically on a schedule (see "interval" below).
+#
+# FIELDS
+#   message   Required. Either a single line, or a YAML list of lines (each list
+#             entry becomes one broadcast line). Supports legacy colour codes
+#             (&a, &#RRGGBB) and MiniMessage (<green>, <gradient>) - mix freely.
+#
+#   interval  Optional. How often the preset fires automatically, using the units
+#             d (days), h (hours), m (minutes), s (seconds) in any combination:
+#             "2h30m", "45m", "1d", "90s", "1d2h30m15s". The first fire happens one
+#             interval after the plugin loads/reloads.
+#             NOTE: a preset that uses {0}/{1} arguments CANNOT be scheduled (there
+#             is nothing to fill the arguments with). If you give such a preset an
+#             interval it is ignored, with a console warning.
+#
+#   sound     Optional. A sound played to every recipient whenever the preset fires
+#             (manual trigger AND schedule). Remove the block for a silent preset.
+#               name   A vanilla sound key ("entity.villager.no") or the enum form
+#                      ("ENTITY_VILLAGER_NO"). Custom resource-pack keys work too.
+#               volume Default 1.0.
+#               pitch  Default 1.0.
+#
+# ARGUMENTS
+#   Put {0}, {1}, {2}... anywhere in the message. When you trigger the preset you
+#   supply exactly that many arguments, space-separated. Wrap an argument that
+#   contains spaces in "double quotes":
+#       /craftedannouncements trigger thanks Steve "VIP Rank"
+#   -> {0} = Steve, {1} = VIP Rank
+
+# Schema version - leave this alone; it drives the auto-merge on update.
+config-version: 1
+
+announcements:
+
+  # Scheduled, multi-line, no arguments - fires every 2 hours 30 minutes.
+  discord:
+    message:
+      - "<gold><bold>=== Community ===</bold>"
+      - "<aqua>Join our Discord: <underlined>discord.gg/yourserver"
+      - "<gray>See you there!"
+    interval: 2h30m
+
+  # Scheduled, single line, no arguments.
+  vote:
+    message: "<green>Remember to vote for the server at <yellow>/vote<green> to earn rewards!"
+    interval: 45m
+
+  # Manual, two arguments, with a sound - e.g. fired by your store (Tebex) on a
+  # purchase:  craftedannouncements trigger thanks %player% "%package%"
+  thanks:
+    message: "<green>Thank you <yellow>{0}</yellow> for purchasing <gold>{1}</gold>!"
+    sound:
+      name: entity.villager.no
+      volume: 1.0
+      pitch: 1.0
