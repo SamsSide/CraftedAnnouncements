@@ -7,7 +7,7 @@
 # Placeholders shown as <name> below are filled in by the plugin.
 
 # Schema version - leave this alone; it drives the auto-merge on update.
-config-version: 1
+config-version: 2
 
 # Prefix prepended to command FEEDBACK messages (success/error/usage) sent to a
 # player or the console. This is not added to broadcasts or preset announcements.
@@ -28,8 +28,9 @@ broadcast-usage: "<red>Usage: <white>/broadcast <message>"
 craftedannouncements-usage:
   - "<gray><strikethrough>                    </strikethrough>"
   - "<aqua>/craftedannouncements reload <gray>- reload all config files"
-  - "<aqua>/craftedannouncements list <gray>- list preset announcements"
+  - "<aqua>/craftedannouncements list <gray>- list preset announcements and loops"
   - "<aqua>/craftedannouncements trigger <id> [args...] <gray>- fire a preset"
+  - "<aqua>/craftedannouncements loop <next|pause|resume|info> <loop> <gray>- control a loop"
   - "<gray><strikethrough>                    </strikethrough>"
 
 # --- reload ---
@@ -43,8 +44,58 @@ list-entry-scheduled: "<green>every <interval>"
 list-entry-manual: "<yellow>manual"
 list-empty: "<gray>There are no preset announcements defined in announcements.yml."
 
+# --- list: presets that belong to a loop ---
+# <loop> = the id of the loop the preset belongs to.
+list-entry-in-loop: "<aqua>in loop <loop>"
+
+# --- list: loops section (only shown when at least one loop is loaded) ---
+# <count> = number of loops.
+list-loops-header: "<gray>Loops (<yellow><count></yellow>):"
+# <id> = loop id, <state> = list-loop-running or list-loop-paused.
+list-loop-entry: "<dark_gray>- <aqua><id> <gray>(<state><gray>)"
+# <interval> = the loop's interval as written, <count> = number of messages in
+# the loop, <next> = number (1-based) of the message that will be sent next.
+list-loop-running: "<green>every <interval>, <count> message(s), next #<next>"
+list-loop-paused: "<yellow>paused<gray>, every <interval>, <count> message(s), next #<next>"
+
 # --- trigger ---
 trigger-usage: "<red>Usage: <white>/craftedannouncements trigger <id> [args...]"
 trigger-unknown-id: "<red>No preset announcement with id '<yellow><id><red>'."
 trigger-arg-count: "<red>Preset '<yellow><id><red>' expects <yellow><expected><red> argument(s), but you supplied <yellow><given><red>."
 trigger-success: "<green>Triggered preset announcement '<yellow><id><green>'."
+
+# --- /craftedannouncements loop ---
+loop-usage: "<red>Usage: <white>/craftedannouncements loop <next|pause|resume|info> <loop>"
+# <id> = the loop id that was typed.
+loop-unknown-id: "<red>No loop with id '<yellow><id><red>'."
+# <id> = loop id, <index> = 1-based number of the message sent,
+# <announcement> = the preset id that was sent.
+loop-next-success: "<green>Sent message #<yellow><index></yellow> ('<yellow><announcement></yellow>') from loop '<yellow><id><green>'."
+loop-next-no-players: "<red>No players are online - nothing was sent and loop '<yellow><id><red>' did not move on."
+loop-pause-success: "<green>Paused loop '<yellow><id><green>'."
+loop-already-paused: "<red>Loop '<yellow><id><red>' is already paused."
+# <interval> = the loop's interval as written.
+loop-resume-success: "<green>Resumed loop '<yellow><id><green>'. Its next message will be sent in <yellow><interval></yellow>."
+loop-not-paused: "<red>Loop '<yellow><id><red>' is not paused."
+
+# --- /craftedannouncements loop info ---
+# <id> = loop id, <status> = loop-info-status-running or loop-info-status-paused.
+loop-info-header: "<gray>Loop '<aqua><id><gray>' (<status><gray>)"
+loop-info-status-running: "<green>running"
+loop-info-status-paused: "<yellow>paused"
+# <interval> = interval as written, <countdown> = time until the next send,
+# built from the duration-* keys below.
+loop-info-timing: "<gray>  Interval: <white><interval></white>   Next send in: <white><countdown>"
+loop-info-timing-paused: "<gray>  Interval: <white><interval></white>   Next send in: <yellow>paused"
+# <number> = 1-based position, <announcement> = preset id.
+loop-info-entry: "<gray>  <number>. <white><announcement>"
+loop-info-entry-next: "<gray>  <number>. <white><announcement></white>  <yellow>« next"
+
+# --- durations (used by the loop info countdown) ---
+# Each unit is shown only if non-zero, largest first, separated by a space,
+# e.g. "1h 5m 30s". A countdown of zero shows duration-seconds with 0.
+# <value> = the number for that unit.
+duration-days: "<value>d"
+duration-hours: "<value>h"
+duration-minutes: "<value>m"
+duration-seconds: "<value>s"

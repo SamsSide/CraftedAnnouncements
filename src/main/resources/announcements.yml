@@ -16,7 +16,8 @@
 #             interval after the plugin loads/reloads.
 #             NOTE: a preset that uses {0}/{1} arguments CANNOT be scheduled (there
 #             is nothing to fill the arguments with). If you give such a preset an
-#             interval it is ignored, with a console warning.
+#             interval it is ignored, with a console warning. A preset that is part
+#             of a loop has its interval ignored.
 #
 #   sound     Optional. A sound played to every recipient whenever the preset fires
 #             (manual trigger AND schedule). Remove the block for a silent preset.
@@ -31,24 +32,51 @@
 #   contains spaces in "double quotes":
 #       /craftedannouncements trigger thanks Steve "VIP Rank"
 #   -> {0} = Steve, {1} = VIP Rank
+#
+# LOOPS
+#   A loop cycles through a list of the presets above, sending ONE of them every
+#   interval, in order, then starting again from the top. Use loops instead of
+#   giving every preset its own interval, so announcements never overlap.
+#
+#   loops:
+#     <loop-id>:
+#       interval       Required. How long between each message, same format as a
+#                      preset interval ("30m", "1h", "1h30m"). The first message is
+#                      sent one interval after the plugin loads/reloads.
+#       announcements  Required. An ordered list of preset IDs from above. The same
+#                      ID may appear more than once. Each send plays that preset's
+#                      message and sound, exactly like a manual trigger.
+#
+#   NOTES
+#     - A preset that is in a loop has its own "interval" ignored (a console
+#       warning says so) - the loop decides when it is sent. It can still be
+#       triggered manually.
+#     - Presets that use {0}/{1} arguments cannot be in a loop (nothing would fill
+#       the arguments); they are skipped with a console warning.
+#     - Unknown preset IDs are skipped with a console warning. A loop with no usable
+#       presets, or a missing/invalid interval, is not loaded.
+#     - If nobody is online when a loop is due, nothing is sent and the loop does
+#       not move on; it tries again one interval later.
+#     - Each loop remembers its position (and whether it is paused) across reloads
+#       and restarts, in loop-state.yml. Changing a loop's list of presets makes it
+#       start again from its first message.
+#     - Control loops in-game with /craftedannouncements loop <next|pause|resume|info> <loop>.
 
 # Schema version - leave this alone; it drives the auto-merge on update.
 config-version: 1
 
 announcements:
 
-  # Scheduled, multi-line, no arguments - fires every 2 hours 30 minutes.
+  # Multi-line, no arguments - sent by the "tips" loop below.
   discord:
     message:
       - "<gold><bold>=== Community ===</bold>"
       - "<aqua>Join our Discord: <underlined>discord.gg/yourserver"
       - "<gray>See you there!"
-    interval: 2h30m
 
-  # Scheduled, single line, no arguments.
+  # Single line, no arguments - sent by the "tips" loop below.
   vote:
     message: "<green>Remember to vote for the server at <yellow>/vote<green> to earn rewards!"
-    interval: 45m
 
   # Manual, two arguments, with a sound - e.g. fired by your store (Tebex) on a
   # purchase:  craftedannouncements trigger thanks %player% "%package%"
@@ -58,3 +86,13 @@ announcements:
       name: entity.villager.no
       volume: 1.0
       pitch: 1.0
+
+loops:
+
+  # Sends "discord", then 30 minutes later "vote", then 30 minutes later
+  # "discord" again, and so on - one message every 30 minutes, never two at once.
+  tips:
+    interval: 30m
+    announcements:
+      - discord
+      - vote

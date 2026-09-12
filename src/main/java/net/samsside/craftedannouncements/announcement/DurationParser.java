@@ -52,18 +52,28 @@ public final class DurationParser {
             } catch (NumberFormatException overflow) {
                 return Optional.empty();
             }
-            totalSeconds += switch (m.group(2)) {
-                case "d" -> value * SECONDS_PER_DAY;
-                case "h" -> value * SECONDS_PER_HOUR;
-                case "m" -> value * SECONDS_PER_MINUTE;
-                default -> value; // "s"
-            };
+            // An absurd interval must be reported as invalid, never silently wrapped
+            // round into a small (or negative) one.
+            try {
+                totalSeconds = Math.addExact(totalSeconds, switch (m.group(2)) {
+                    case "d" -> Math.multiplyExact(value, SECONDS_PER_DAY);
+                    case "h" -> Math.multiplyExact(value, SECONDS_PER_HOUR);
+                    case "m" -> Math.multiplyExact(value, SECONDS_PER_MINUTE);
+                    default -> value; // "s"
+                });
+            } catch (ArithmeticException tooLarge) {
+                return Optional.empty();
+            }
             matchedChars = m.end();
         }
 
         if (matchedChars != s.length() || totalSeconds <= 0L) {
             return Optional.empty();
         }
-        return Optional.of(totalSeconds * TICKS_PER_SECOND);
+        try {
+            return Optional.of(Math.multiplyExact(totalSeconds, TICKS_PER_SECOND));
+        } catch (ArithmeticException tooLarge) {
+            return Optional.empty();
+        }
     }
 }
