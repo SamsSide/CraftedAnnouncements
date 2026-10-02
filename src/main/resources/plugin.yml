@@ -16,7 +16,7 @@ commands:
   craftedannouncements:
     description: Crafted Announcements admin root command.
     aliases: [ca]
-    usage: /craftedannouncements <reload|list|trigger>
+    usage: /craftedannouncements <reload|list|trigger|loop>
   broadcast:
     description: Broadcast a message to every online player.
     aliases: [announce, bc, ac]
@@ -34,4 +34,16 @@ permissions:
     default: op
   craftedannouncements.broadcast:
     description: Allows sending an ad-hoc broadcast to every player.
+    default: op
+  craftedannouncements.loop.next:
+    description: Allows sending a loop's next message immediately.
+    default: op
+  craftedannouncements.loop.pause:
+    description: Allows pausing a loop.
+    default: op
+  craftedannouncements.loop.resume:
+    description: Allows resuming a paused loop.
+    default: op
+  craftedannouncements.loop.info:
+    description: Allows viewing a loop's status, countdown and message order.
     default: op

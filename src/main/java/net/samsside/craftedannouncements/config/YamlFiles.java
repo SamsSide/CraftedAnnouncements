@@ -71,6 +71,15 @@ public final class YamlFiles {
         return userConfig;
     }
 
+    /**
+     * The bundled default copy of {@code fileName} straight from the jar, with no
+     * merging and no touching of the user's file. Used by migrations that need to
+     * read a new default value rather than duplicate it in Java.
+     */
+    public static YamlConfiguration bundledDefaults(JavaPlugin plugin, String fileName) {
+        return loadBundledDefaults(plugin, fileName);
+    }
+
     private static YamlConfiguration loadBundledDefaults(JavaPlugin plugin, String fileName) {
         YamlConfiguration defaults = new YamlConfiguration();
         defaults.options().parseComments(true);

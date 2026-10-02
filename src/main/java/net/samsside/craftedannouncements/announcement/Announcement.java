@@ -17,15 +17,18 @@ public final class Announcement {
     private final Optional<Long> scheduleTicks;
     private final String intervalDisplay;
     private final Optional<SoundSpec> sound;
+    private final Optional<String> loopId;
 
     public Announcement(String id, List<String> preparedLines, int argCount,
-                        Optional<Long> scheduleTicks, String intervalDisplay, Optional<SoundSpec> sound) {
+                        Optional<Long> scheduleTicks, String intervalDisplay, Optional<SoundSpec> sound,
+                        Optional<String> loopId) {
         this.id = id;
         this.preparedLines = List.copyOf(preparedLines);
         this.argCount = argCount;
         this.scheduleTicks = scheduleTicks;
         this.intervalDisplay = intervalDisplay;
         this.sound = sound;
+        this.loopId = loopId;
     }
 
     public String id() {
@@ -60,5 +63,28 @@ public final class Announcement {
     /** The optional sound played to every recipient when this preset fires. */
     public Optional<SoundSpec> sound() {
         return sound;
+    }
+
+    /**
+     * The display id of the first loop (in file order) that sends this preset, if
+     * any. A preset in a loop never carries its own {@link #scheduleTicks()}: the
+     * loop decides when it goes out, so the two can never fire over each other.
+     */
+    public Optional<String> loopId() {
+        return loopId;
+    }
+
+    /** Whether this preset is sent by a loop rather than its own timer. */
+    public boolean inLoop() {
+        return loopId.isPresent();
+    }
+
+    /**
+     * A copy of this preset handed over to {@code loopDisplayId}: same message, args
+     * and sound, but with its own schedule dropped so only the loop sends it.
+     */
+    Announcement joinedToLoop(String loopDisplayId) {
+        return new Announcement(id, preparedLines, argCount, Optional.empty(), intervalDisplay,
+                sound, Optional.of(loopDisplayId));
     }
 }
